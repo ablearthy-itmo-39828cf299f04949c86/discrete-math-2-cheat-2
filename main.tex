@@ -1,11 +1,14 @@
 \documentclass[a4paper]{article}
 
+
 \usepackage{ablpreamble}
 \usepackage{physics}
 \AtBeginDocument{\RenewCommandCopy\qty\SI}
 \ExplSyntaxOn
 \msg_redirect_name:nnn { siunitx } { physics-pkg } { none }
 \ExplSyntaxOff
+
+\usepackage[normalem]{ulem}
 
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{corollary}{Corollary}[theorem]
@@ -43,17 +46,17 @@ Range of a function:
 \begin{definition}[\(\Sigma\)-string]
  \(\Sigma\)-string \(s\) of length \(n\) is
  \[ s = s(1) s(2) \ldots s(n) \]
- String elements called \textit{letters}.
+ Elements of the string are called \textit{letters}.
  Often \(s\) called a \textit{word}.
 \end{definition}
 
-Ordered arrangment can be views as a an element of
+Ordered arrangement can be views as an element of
 \(n\)-fold \textit{Cartesian product}
 \(\Sigma \times \Sigma \ldots \times \Sigma\).
 
 \section{Permutations}
 \begin{definition}[Permutation]
-  Permutations is a bijective map \(\pi : [n] \to \Sigma\)
+  Permutation is a bijective map \(\pi : [n] \to \Sigma\)
   (i.e. each \(x \in \Sigma\) appears in a word exactly once).
 \end{definition}
 
@@ -79,7 +82,7 @@ In particular, if \(n = k\), then \(S_n = P(n, n)\).
 \(P_c(n, k)\) is a set of all circular \(k\)-permutations
 
 \[|P(n, k)| = \frac{n!}{(n - k)!} = \fallfac{n}{k}\]
-\[|P_c(n, k)| = \frac{n!}{k! (n - k)!} = |P(n, k)| / k!\]
+\[|P_c(n, k)| = \frac{n!}{k! (n - k)!} = \frac{|P(n, k)|}{k!}\]
 
 \section{Unordered arrangements}
 
@@ -96,7 +99,7 @@ In particular, if \(n = k\), then \(S_n = P(n, n)\).
 
 \begin{definition}[\(k\)-Combination]
   A \(k\)-combination of \(\Sigma\) is an unordered arrangement of \(k\)
-  distinct elements (i.e. \(m(\sigma) \in \{0, 1\}\) from \(\Sigma\).
+  distinct elements (i.e. \(m(\sigma) \in \{0, 1\}\)) from \(\Sigma\).
 \end{definition}
 
 \(\binom{\Sigma}{k}\) is the set of all \(k\)-combinations of \(\Sigma\).
@@ -136,7 +139,7 @@ Given a multiset \(S = \langle \Sigma, m \rangle\).
 \(\Sigma = \{\sigma_1, \sigma_2, \ldots \sigma_n\}\).
 Then, the number of \(n\)-permutations of \(S\) equals:
 \[ \binom{n}{m(\sigma_1), m(\sigma_2), \ldots m(\sigma_n)}
-  = \binom{n}{m(\sigma_1)! m(\sigma_2)! \ldots m(\sigma_n)!} \]
+  = \frac{n!}{m(\sigma_1)! m(\sigma_2)! \ldots m(\sigma_n)!} \]
 
 \section{Composition}
 
@@ -149,6 +152,11 @@ Then, the number of \(n\)-permutations of \(S\) equals:
 The number of weak compositions (\(n\), \(k\))
 equals the number of multisets of cardinality \(n\) taken
 from a set of size \(k\).
+Therefore, it equals
+\[
+  \left( \binom{k}{n} \right)
+  = \binom{n + k - 1}{n}
+.\]
 
 \begin{definition}[Composition]
   A weak composition of \(n \in \mathbb{N}\) into \(k\) parts
@@ -173,7 +181,9 @@ The number of all compositions \(\forall k \le n\) equals:
 \begin{definition}
   Partition of \([n]\) into \(k\) non-empty parts is
   a set \(A = \{A_1, A_2, \ldots A_k\}\)
-  such that \(\forall i : A_i \neq 0\) and \(\bigcup_i A_i = [n]\).
+  such that \(\forall i : A_i \neq \varnothing\),
+  and \(\forall i, j : A_i \cap A_j = \varnothing\),
+  and \(\bigcup_i A_i = [n]\).
 \end{definition}
 
 The number of such partitions can be defined by the formula:
@@ -183,7 +193,7 @@ The number of such partitions can be defined by the formula:
 It can be interpreted in the following the way:
 assume it's known how many ways to partition
 set \([n - 1]\) into \(k\) and \(k - 1\) parts.
-Therefore, to each such partition (\([n - 1]\), \(k\)) it's possible
+Therefore, to each partition (\([n - 1]\), \(k\)) it's possible
 to add element \(n\) in \(k\) ways (to each part) and form partition (\([n]\),
 \(k\)).
 Consequently, the overall number of such partitions is \(k \StIn{k}{n - 1}\).
@@ -210,7 +220,6 @@ The overall number of integer partitions of \(n\) is
 
 The number of partitions with odd parts equals the number of partitions with
 distinct parts.
-%TODO: generating function?
 
 \section{Principle of Inclusion-Exclusion}
 \begin{theorem}
@@ -236,7 +245,7 @@ distinct parts.
   \(\binom{k}{i}\) sets \(s\) such that \(|s| = i \land s \subseteq L\).
   According to the formula, the number of times element is counted equals:
   \[
-    \sum_{s \in L} (-1)^{|s|}
+    \sum_{s \subseteq L} (-1)^{|s|}
     = \sum_{i = 0}^{k} \binom{k}{i} (-1)^{i}
   .\]
   In fact, the latter is the same as \((1 + (-1))^k\), since
@@ -333,17 +342,15 @@ Therefore, a \textit{regular language} is an element of \(\REG\).
 \end{definition}
 
 DFA ,,reads'' the word symbol by symbol.
-Initially, it has initial state.
-Assume at some time DFA has state \(q\) and it reads symbol \(\sigma_i\).
+Initially, it has initial state \(s\).
+Assume, at some time DFA has state \(q\) and it reads symbol \(\sigma_i\).
 Then, DFA state is changed to \(\delta(q, \sigma_i)\) and a symbol is consumed.
 
 DFA \textit{accepts} a word if after consumption the whole word it has state
 \(q \in T\).
 
-% TODO: Kleene's theorem
-
 \begin{definition}[Non-deterministic finite automata (NFA)]
-  Similar to DFA except the transition function:
+  Similar to DFA, except the transition function:
   \(\delta : Q \times \Sigma \to 2^Q\).
 \end{definition}
 
@@ -358,29 +365,29 @@ DFA \textit{accepts} a word if after consumption the whole word it has state
 \iff
 \begin{cases}
   \alpha &= c \beta \\
-  r &\in \delta(q, c)
+  r &\in \delta(q, c).
 \end{cases}
-.\]
+\]
 
 \textit{Language recognized by an automata}
 is a set of words that the automata accepts.
 
 \begin{definition}[\(\varepsilon\)-NFA]
   \(\varepsilon\)-NFA is an NFA where \(\varepsilon \in \Sigma\).
-  Informally, the transitions that just change the state of the NFA
+  Informally, there are transitions that just change the state of the NFA
   and do not consume word are allowed.
 \end{definition}
 
-\subsection{Regular expression to \(\varepsilon\)-NFA}
+\subsection{Regular expression to \(\varepsilon\)-NFA}\label{sec:regexp-to-enfa}
 
 In the figures: ,,start'' and ,,end'' state are initial
 and terminating.
-\textit{White} dot is initial state, \textit{black} dot is terminating state.
+\textit{White} dot is an initial state, \textit{black} dot is terminating state.
 \begin{enumerate}
   \item if regular expression is literal character,
-    then create the singleton state.
+    then create the singleton NFA.
   \item if there's a concatenation of regular expressions \(R\) and \(S\),
-    then create NFA of type shown in figure \ref{fig:enfa-1})
+    then create NFA of type shown in figure \ref{fig:enfa-1}.
   \begin{figure}[!htbp]
     \centering
     \begin{tikzpicture}[node distance=2cm]
@@ -399,7 +406,7 @@ and terminating.
     \caption{Concatenation \((RS)\)}\label{fig:enfa-1}
   \end{figure}
   \item if there's a union of regular expressions \(R\) and \(S\), then
-    create NFA of type shown in figure \ref{fig:enfa-2})
+    create NFA of type shown in figure \ref{fig:enfa-2}.
   \begin{figure}[!htbp]
     \centering
     \begin{tikzpicture}[node distance=2cm]
@@ -438,8 +445,52 @@ and terminating.
     \end{tikzpicture}
     \caption{Kleene star \((R^*)\)}\label{fig:enfa-3}
   \end{figure}
-
 \end{enumerate}
+
+
+\begin{theorem}[Kleene's theorem]
+  A language is accepted by regular expression
+  \textit{iff} the language is accepted by finite automata.
+\end{theorem}
+
+\begin{proof}
+\textit{A language is accepted by regular expression implies
+  the language is accepted by finite automata.}
+
+See construction of the \(\varepsilon\)-NFA from regular expression
+(section \ref{sec:regexp-to-enfa}).
+
+\textit{A language is accepted by finite automata implies
+the language is accepted by regular expression.}
+
+Construct a regular expression by NFA.
+Let \textit{generalized finite automata} be
+a finite automata where ,,edges'' are \textit{regular expressions}.
+Therefore, the transition from one state to another may consume
+more than one symbol.
+
+The task is to reduce NFA to generalized FA,
+so that it contains only initial state and terminal states.
+
+Perform two operations:
+\begin{enumerate}
+  \item edge reduction:
+    if there is transition \(q_2 \in \delta(q_1, c)\)
+    and transition \(q_2 \in \delta(q_1, r)\), then
+    replace them by transition \(\delta(q_1, (r|c))\) (the transition is regular
+    expression!),
+  \item state reduction:
+    if there's a transition \(q \in \delta(p_1, f_1)\)
+    and transition \(p_2 \in \delta(q, f_2)\).
+    Then remove these transitions and
+    add transition \(p_2 \in \delta(p_1, (f_1 g^* f_2))\), where
+    \(q \in \delta(q, g)\) (if it doesn't exist, then ignore it).
+\end{enumerate}
+Perform these two operations while possible.
+After all, there are transitions \(t_i \in \delta(s, f_i) \in T\).
+Then construct regular expression: \((f_1 | f_2 | \ldots | f_n)\).
+\end{proof}
+
 
 \subsection{\(\varepsilon\)-NFA to NFA}
 
@@ -511,8 +562,19 @@ and terminating.
 \end{enumerate}
 
 \section{NFA to DFA}
-%TODO
+Given NFA \(\left< \Sigma, Q, s, T , \delta\right>\),
+construct DFA \(\left< \Sigma, Q', s', T' , \delta' \right>\).
 
+\begin{enumerate}
+  \item \label{enum:nfa-to-dfa:1} Obtain set of new states \(S\). If none, then
+    \(S = \{\{s\}\}\).
+  \item For each new state \(R \in S\) (\(R = \{q_1, q_2 \ldots q_n\}\))
+     and for each \(c \in \Sigma\):
+     \(q' = \delta'(R, c) = \bigcup_{q \in R} \delta(q, c) \).
+     Add \(q'\) to \(Q'\) if it is not in the set.
+  \item If there are new states in \(Q'\) since step (\ref{enum:nfa-to-dfa:1})
+    were added, then \(S := Q' - Q'_{\text{old}}\), continue, otherwise break.
+\end{enumerate}
 
 \section{Recurrence relations}
 
@@ -539,7 +601,7 @@ and terminating.
 
 Characteristic equation can be used to obtain closed form of
 a linear recurrence that doesn't contain \(n\) in equation.
-It's very similar to linear ordinary differential equations.
+It's very similar to linear ordinary differential equations!
 
 \section{Asymptotic analysis}
 
@@ -549,6 +611,16 @@ a function behaves on infinity.
 Functions \(f(x)\) and \(g(x)\) in relation \(f(x) \sim g(x)\)
 if  \(\lim_{x \to \infty} \frac{f(x)}{g(x)} = 1\).
 Functions \(f(x)\) and \(g(x)\) are \textit{asymptotically equivalent}.
+
+\begin{align*}
+f(n) \in O(g(n))
+&\iff \exists c > 0 \exists n_0 \forall n > n_0 : |f(n)| \le c g(n) \\
+f(n) \in \Omega(g(n))
+&\iff \exists c > 0 \exists n_0 \forall n > n_0 : |f(n)| \ge c g(n) \\
+f(n) \in \Theta(g(n))
+&\iff f(n) \in O(g(n)) \land f(n) \in \Omega(g(n))
+\end{align*}
+Or: \(f(n) \in O(g(n)) \iff \limsup_{n \to \infty} \frac{f(n)}{g(n)} < \infty\).
 
 \section{Divide-and-conquer algorithms analysis}
 
@@ -565,11 +637,12 @@ is a divide-and-conquer algorithm.
   T(n) =
 \begin{cases}
   \Theta(1) & \text{if}\ n = 1, \\
-  T(\lfloor n/2 \rfloor) + T(\lceil n/2 \rceil) + \Theta(n) & \text{otherwise}
+  T(\lfloor n/2 \rfloor) + T(\lceil n/2 \rceil) + \Theta(n) & \text{otherwise}.
 \end{cases}
-.\]
+\]
 Here \(\Theta(n)\) is the time complexity needed to merge two sorted subarrays
-that were obtained by \(T(\lfloor n/2 \rfloor)\) and \(T(\lceil n/2 \rceil)\).
+that were ,,obtained'' by
+\(T(\lfloor n/2 \rfloor)\) and \(T(\lceil n/2 \rceil)\).
 
 \begin{definition}[Master theorem]
   Master theorem provides an asymptotic analysis
@@ -588,7 +661,7 @@ Let \(\ccrit = \log_b a\).
 Then
 \begin{enumerate}
   \item If \(f(n) \in O(n^c)\), where  \(c < \ccrit\), then
-    work to split/recombine is dwarfed actual sub-problems.
+    work to split/recombine is dwarfed by actual sub-problems.
     Therefore, \(T(n) \in \Theta(n^\ccrit)\).
   \item If \(f(n) \in \Omega(n^c)\), where \(c > \ccrit\)
     \textit{and}
@@ -645,6 +718,7 @@ can be done on formal power series.
   A generating function for a sequence \(a_n\) is a
   formal power series for the sequence.
 \end{definition}
+\sout{GF is like girlfriend but I only have a generating function.}
 
 \subsection{Solving linear recurrences using GF}
 
@@ -735,12 +809,10 @@ problems if the task is about choosing something.
   For example, \(n = 20\).
   Then, the task is to find coefficient of  \(x^{20}\) of
   \[
-     \sum_{n = 1}^{\infty} (x + x^2 + x^3 + x^5 + x^8 + x^{13})^n
+     \sum_{n = 1}^{\infty} (x + x^2 + x^3 + x^5 + x^8 + x^{13})^n,
   \]
   \(n\) in sum represents the cardinality of multiset.
 \end{example}
-
-
 
 \section{Operators and annihilator}
 

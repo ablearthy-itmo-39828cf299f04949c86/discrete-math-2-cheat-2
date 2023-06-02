@@ -16,6 +16,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      
+      - name: Install fonts
+        run: apt install -y fonts-noto-mono
 
       - name: Build PDF
         run: latexmk -xelatex -shell-escape main.tex

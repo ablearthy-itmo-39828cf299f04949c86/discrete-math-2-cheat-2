@@ -497,8 +497,8 @@ Then construct regular expression: \((f_1 | f_2 | \ldots | f_n)\).
 \subsection{\(\varepsilon\)-NFA to NFA}
 
 \begin{enumerate}
-  \item Reduce ,,unnecessary'' \(\varepsilon\)-transitions (see figure
-    \ref{fig:enfa-to-nfa-1})
+  \item (Optional) Make ,,transitive closure'' of \(\varepsilon\)-transitions
+    (see figure \ref{fig:enfa-to-nfa-1})
   \begin{figure}[!htbp]
     \centering
     \begin{tikzpicture}[node distance=2cm]
@@ -506,11 +506,11 @@ Then construct regular expression: \((f_1 | f_2 | \ldots | f_n)\).
       \node[draw, circle, right of=A] (B) {\(B\)};
       \node[draw, circle, right of=B] (C) {\(C\)};
 
-      \draw[->, color=red] (A) to node[below] {\(\varepsilon\)} (B);
-      \draw[->, color=red] (B) to node[below] {\(\varepsilon\)} (C);
-      \draw[->, color=green] (A) to[out=-30, in=-150] node[below] {\(\varepsilon\)} (C);
+      \draw[->] (A) to node[below] {\(\varepsilon\)} (B);
+      \draw[->] (B) to node[below] {\(\varepsilon\)} (C);
+      \draw[->] (A) to[out=-30, in=-150] node[below] {\(\varepsilon\)} (C);
     \end{tikzpicture}
-    \caption{Removing ,,unnecessary'' \(\varepsilon\)-transitions}%
+    \caption{Make ,,transitive closure'' of \(\varepsilon\)-transitions}%
     \label{fig:enfa-to-nfa-1}
   \end{figure}
   \item Back-propagate terminating states over \(\varepsilon\)-transitions
@@ -534,7 +534,8 @@ Then construct regular expression: \((f_1 | f_2 | \ldots | f_n)\).
     \(\varepsilon\)-transition}%
     \label{fig:enfa-to-nfa-2}
   \end{figure}
-  \item Perform symbol-transition (see figure \ref{fig:enfa-to-nfa-3})
+  \item Perform symbol-transition over \(\varepsilon\)-transitions
+    (see figure \ref{fig:enfa-to-nfa-3})
   \begin{figure}[!htbp]
     \centering
     \begin{tikzpicture}[node distance=2cm]
@@ -557,7 +558,7 @@ Then construct regular expression: \((f_1 | f_2 | \ldots | f_n)\).
       \draw[->] (B_1) to node[below] {\(c\)} (C_1);
       \draw[->] (A_1) to[out=-45,in=-135] node[below] {\(c\)} (C_1);
     \end{tikzpicture}
-    \caption{Performing symbol-transition}%
+    \caption{Performing symbol-transition over \(\varepsilon\)-transitions}%
     \label{fig:enfa-to-nfa-3}
   \end{figure}
   \item Remove \(\varepsilon\)-transitions.

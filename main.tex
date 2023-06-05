@@ -384,8 +384,10 @@ In the figures: ,,start'' and ,,end'' state are initial
 and terminating.
 \textit{White} dot is an initial state, \textit{black} dot is terminating state.
 \begin{enumerate}
+  \item if regular expression is empty symbol, then create singleton NFA.
   \item if regular expression is literal character,
-    then create the singleton NFA.
+    then create the NFA with two nodes and add transition between these nodes
+    by the character.
   \item if there's a concatenation of regular expressions \(R\) and \(S\),
     then create NFA of type shown in figure \ref{fig:enfa-1}.
   \begin{figure}[!htbp]
